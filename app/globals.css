@@ -123,3 +123,9 @@
     @apply bg-background text-foreground;
   }
 }
+
+
+.btn-primary {
+  @apply bg-[#9b1c23] text-white px-6 py-2 rounded-md
+  hover:bg-[#7f161c] transition;
+}
