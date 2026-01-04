@@ -1,26 +1,30 @@
 "use client";
 
 import { useState } from "react";
-import { User, Mail, Phone, MapPin, Calendar } from "lucide-react";
+import { User, Mail, Phone, MapPin, Calendar, CreditCard } from "lucide-react";
+
 import { useRouter } from "next/navigation";
 
 export default function SignupForm() {
   const router = useRouter();
 
-  const [form, setForm] = useState({
+    const [form, setForm] = useState({
     fullName: "",
     email: "",
     mobile: "",
     city: "",
     dob: "",
+    cardLimit: "", // ✅ added
   });
 
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+
     setForm((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value,
+      [name]: value.trimStart(),
     }));
   };
 
@@ -44,7 +48,6 @@ export default function SignupForm() {
         throw new Error("Signup failed");
       }
 
-      // ✅ redirect after successful signup
       router.push("/dashboard");
     } catch (error) {
       alert("Signup failed. Please try again.");
@@ -64,30 +67,61 @@ export default function SignupForm() {
           icon={User}
           name="fullName"
           placeholder="Full Name *"
+          maxLength={50}
+          pattern="^[A-Za-z\s]+$"
+          title="Only letters and spaces allowed"
           onChange={handleChange}
         />
+
         <Input
           icon={Mail}
           name="email"
           placeholder="Email Address *"
+          type="email"
+          maxLength={100}
+          pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$"
           onChange={handleChange}
         />
+
         <Input
           icon={Phone}
           name="mobile"
           placeholder="Mobile Number *"
+          type="tel"
+          inputMode="numeric"
+          maxLength={10}
+          pattern="^[6-9]\d{9}$"
+          title="Enter a valid 10-digit mobile number"
           onChange={handleChange}
         />
+
         <Input
           icon={MapPin}
           name="city"
           placeholder="City *"
+          maxLength={30}
+          pattern="^[A-Za-z\s]+$"
+          title="Only letters allowed"
           onChange={handleChange}
         />
+
         <Input
           icon={Calendar}
           name="dob"
           type="date"
+          max={new Date().toISOString().split("T")[0]}
+          onChange={handleChange}
+        />
+
+
+        <Input
+          icon={CreditCard}
+          name="cardLimit"
+          placeholder="Card Limit (₹)"
+          inputMode="numeric"
+          maxLength={7}
+          pattern="^\d+$"
+          title="Enter card limit in numbers only"
           onChange={handleChange}
         />
 
@@ -115,12 +149,22 @@ function Input({
   placeholder,
   type = "text",
   onChange,
+  maxLength,
+  pattern,
+  title,
+  inputMode,
+  max,
 }: {
   icon: any;
   name: string;
   placeholder?: string;
   type?: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  maxLength?: number;
+  pattern?: string;
+  title?: string;
+  inputMode?: React.HTMLAttributes<HTMLInputElement>["inputMode"];
+  max?: string;
 }) {
   return (
     <div className="flex items-center gap-3 border rounded-lg px-4 py-3 bg-gray-50">
@@ -131,6 +175,11 @@ function Input({
         placeholder={placeholder}
         onChange={onChange}
         required
+        maxLength={maxLength}
+        pattern={pattern}
+        title={title}
+        inputMode={inputMode}
+        max={max}
         className="w-full bg-transparent outline-none text-sm"
       />
     </div>

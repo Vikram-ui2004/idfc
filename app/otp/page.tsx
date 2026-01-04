@@ -17,8 +17,7 @@ export default function OTPPage() {
         </h1>
         <p className="text-gray-500 mt-2 text-sm">
           Please enter the 6-digit OTP sent to your registered number
-          <br className="hidden sm:block" />
-          <span className="font-medium">1234567891</span>.
+         
         </p>
 
         {/* OTP FORM */}
