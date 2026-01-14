@@ -17,4 +17,4 @@ const Navbar: React.FC = () => {
   );
 };
 
-export default HeroBanner;
+export default Navbar;
