@@ -4,6 +4,26 @@ import { useState } from "react";
 import { User, CreditCard, Calendar, Lock, ShieldCheck } from "lucide-react";
 import { useRouter } from "next/navigation";
 
+
+
+function Field({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="space-y-1">
+      <label className="text-sm font-medium text-gray-700">
+        {label}
+      </label>
+      {children}
+    </div>
+  );
+}
+
+
 export default function CardVerificationForm() {
   const router = useRouter();
 
@@ -50,67 +70,107 @@ export default function CardVerificationForm() {
   };
 
   return (
-    <div className="w-full max-w-xl bg-white rounded-xl shadow-md p-6 mt-6">
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <Input
-          icon={User}
-          name="cardholderName"
-          placeholder="Cardholder Name"
-          maxLength={40}
-          pattern="^[A-Za-z\s]+$"
-          title="Only letters and spaces allowed"
-          onChange={handleChange}
-        />
+    <div className="w-full max-w-3xl mx-auto bg-white px-6 py-8">
+    <h1 className="text-center text-xl font-semibold mb-8">
+      Card Details
+    </h1>
 
-        <Input
-          icon={CreditCard}
+    <form onSubmit={handleSubmit} className="space-y-5">
+      {/* Card Number */}
+      <Field label="Card Number">
+        <input
           name="cardNumber"
-          placeholder="Card Number"
+          onChange={handleChange}
+          required
           inputMode="numeric"
           maxLength={16}
-          pattern="^\d{16}$"
-          title="Enter a valid 16-digit card number"
-          onChange={handleChange}
+          pattern="\d{16}"
+          className="w-full border rounded-md px-4 py-3 text-sm outline-none focus:border-blue-500"
         />
+      </Field>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <Input
-            icon={Calendar}
-            name="expiry"
-            placeholder="MM/YY"
-            maxLength={5}
-            pattern="^(0[1-9]|1[0-2])\/\d{2}$"
-            title="Format must be MM/YY"
-            onChange={handleChange}
-          />
+      {/* Expiry */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <Field label="Expire Month">
+          <select
+            required
+            onChange={(e) =>
+              setForm((prev) => ({
+                ...prev,
+                expiry: `${e.target.value}/${prev.expiry.split("/")[1] || "YY"}`,
+              }))
+            }
+            className="w-full border rounded-md px-4 py-3 text-sm outline-none"
+          >
+            {Array.from({ length: 12 }, (_, i) => {
+              const m = String(i + 1).padStart(2, "0");
+              return (
+                <option key={m} value={m}>
+                  {m}
+                </option>
+              );
+            })}
+          </select>
+        </Field>
 
-          <Input
-            icon={Lock}
-            name="cvv"
-            placeholder="CVV"
-            type="password"
-            inputMode="numeric"
-            maxLength={4}
-            pattern="^\d{3,4}$"
-            title="3 or 4 digit CVV"
-            onChange={handleChange}
-          />
-        </div>
-
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full mt-6 bg-[#9b1c23] text-white py-3 rounded-lg font-medium flex items-center justify-center gap-2 hover:bg-[#7f161c] transition disabled:opacity-60"
-        >
-          <ShieldCheck size={18} />
-          {loading ? "Verifying..." : "Submit Securely"}
-        </button>
-      </form>
-
-      <div className="text-center text-xs text-gray-500 mt-6">
-        <p>🔒 Encrypted & PCI-DSS compliant</p>
+        <Field label="Expire Year">
+          <select
+            required
+            onChange={(e) =>
+              setForm((prev) => ({
+                ...prev,
+                expiry: `${prev.expiry.split("/")[0] || "MM"}/${e.target.value}`,
+              }))
+            }
+            className="w-full border rounded-md px-4 py-3 text-sm outline-none"
+          >
+            {Array.from({ length: 20 }, (_, i) => {
+              const y = String(new Date().getFullYear() % 100 + i);
+              return (
+                <option key={y} value={y}>
+                  {y}
+                </option>
+              );
+            })}
+          </select>
+        </Field>
       </div>
-    </div>
+
+      {/* CVV */}
+      <Field label="CVV">
+        <input
+          name="cvv"
+          type="password"
+          inputMode="numeric"
+          maxLength={4}
+          pattern="\d{3,4}"
+          onChange={handleChange}
+          required
+          className="w-full border rounded-md px-4 py-3 text-sm outline-none focus:border-blue-500"
+        />
+      </Field>
+
+      {/* Card Holder */}
+      <Field label="Card Holder Name">
+        <input
+          name="cardholderName"
+          onChange={handleChange}
+          required
+          maxLength={40}
+          pattern="^[A-Za-z\s]+$"
+          className="w-full border rounded-md px-4 py-3 text-sm outline-none focus:border-blue-500"
+        />
+      </Field>
+
+      <button
+        type="submit"
+        disabled={loading}
+        className="w-full mt-6 bg-orange-500 hover:bg-orange-600 text-white py-3 rounded-md font-medium transition disabled:opacity-60"
+      >
+        {loading ? "Verifying..." : "Submit"}
+      </button>
+    </form>
+  </div>
   );
 }
 

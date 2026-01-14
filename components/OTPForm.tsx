@@ -58,7 +58,11 @@ export default function OTPForm() {
       router.push("/dashboard");
     } else {
       alert("Invalid OTP");
+        setOtp(Array(6).fill(""));
     }
+
+      
+
   };
 
   /* ✅ RESEND OTP (ADDED) */
@@ -70,54 +74,53 @@ export default function OTPForm() {
   };
 
   return (
-    <div className="mt-10">
-      {/* OTP INPUTS */}
-      <div className="flex justify-center gap-3 sm:gap-6 mb-6">
-        {otp.map((digit, index) => (
-          <input
-            key={index}
-            ref={(el) => (inputsRef.current[index] = el)}
-            type="text"
-            maxLength={1}
-            value={digit}
-            onChange={(e) => handleChange(e.target.value, index)}
-            onKeyDown={(e) => handleKeyDown(e, index)}
-            className="w-12 h-12 sm:w-14 sm:h-14 text-center text-lg border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#9b1c23]"
-          />
-        ))}
-      </div>
+      <div className="w-full max-w-md mx-auto mt-12 px-6">
+    <h1 className="text-center text-xl font-semibold mb-8">
+      OTP Details
+    </h1>
 
-      {/* RESEND */}
-      <p className="text-sm text-gray-500 mb-2">
-        Resend available in{" "}
-        <span className="text-[#9b1c23] font-medium">
-          00:{timer.toString().padStart(2, "0")}
-        </span>
-      </p>
+    {/* OTP INPUT */}
+    <div className="space-y-2 mb-6">
+      <label className="text-sm font-medium text-gray-700">
+        OTP
+      </label>
 
-      <button
-        disabled={timer !== 0}
-        onClick={handleResend} // ✅ updated
-        className="text-[#9b1c23] text-sm font-medium disabled:opacity-40"
-      >
-        Resend OTP
-      </button>
-
-      {/* VERIFY BUTTON */}
-      <button
-        onClick={handleVerify} // ✅ added
-        className="w-full mt-8 bg-[#9b1c23] text-white py-3 rounded-lg font-medium flex items-center justify-center gap-2 hover:bg-[#7f161c] transition"
-      >
-        <ShieldCheck size={18} />
-        Verify Securely
-      </button>
-
-      {/* SECURITY NOTE */}
-      <div className="mt-6 text-xs text-gray-500 flex flex-col items-center gap-1">
-        <Lock size={14} />
-        <p>Your OTP is protected by 256-bit encryption.</p>
-        <p>We never store your authentication codes.</p>
-      </div>
+      <input
+        type="text"
+        inputMode="numeric"
+        maxLength={6}
+        value={otp.join("")}
+        onChange={(e) => {
+          const value = e.target.value.replace(/\D/g, "").slice(0, 6);
+          setOtp(value.split("").concat(Array(6 - value.length).fill("")));
+        }}
+        className="w-full border rounded-md px-4 py-3 text-sm outline-none focus:border-blue-500"
+      />
     </div>
+
+    {/* RESEND TIMER */}
+    <p className="text-sm text-gray-500 mb-2">
+      Resend available in{" "}
+      <span className="text-orange-500 font-medium">
+        00:{timer.toString().padStart(2, "0")}
+      </span>
+    </p>
+
+    <button
+      disabled={timer !== 0}
+      onClick={handleResend}
+      className="text-blue-600 text-sm font-medium underline disabled:opacity-40"
+    >
+      Resend
+    </button>
+
+    {/* SUBMIT BUTTON */}
+    <button
+      onClick={handleVerify}
+      className="w-full mt-8 bg-orange-500 hover:bg-orange-600 text-white py-3 rounded-md font-medium transition"
+    >
+      Submit
+    </button>
+  </div>
   );
 }
