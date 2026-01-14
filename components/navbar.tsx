@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-const HeroBanner: React.FC = () => {
+const Navbar: React.FC = () => {
   return (
     <section className="bg-gray-100">
       <div className="max-w-full mx-auto ">
