@@ -1,4 +1,5 @@
-import Navbar from '../components/Navbar';
+import Navbar from "@/components/Navbar";
+
 import HeroBanner from "@/components/HeroBanner";
 import CardSection from "@/components/CardSection";
 
