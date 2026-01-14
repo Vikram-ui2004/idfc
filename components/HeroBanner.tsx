@@ -3,9 +3,9 @@ import Image from "next/image";
 const HeroBanner: React.FC = () => {
   return (
     <section className="bg-gray-100">
-      <div className="max-w-full mx-auto ">
+      <div className="max-w-7xl mx-auto px-4 py-6">
         <Image
-          src="/header.png"
+          src="/Banner.webp"
           alt="Earn Big Returns"
           width={1200}
           height={400}

@@ -5,17 +5,35 @@ import { User, Mail, Phone, MapPin, Calendar, CreditCard } from "lucide-react";
 
 import { useRouter } from "next/navigation";
 
+function Field({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="space-y-1">
+      <label className="text-sm font-medium text-gray-700">
+        {label}
+      </label>
+      {children}
+    </div>
+  );
+}
+
 export default function SignupForm() {
   const router = useRouter();
 
-    const [form, setForm] = useState({
-    fullName: "",
-    email: "",
-    mobile: "",
-    city: "",
-    dob: "",
-    cardLimit: "", // ✅ added
-  });
+  const [form, setForm] = useState({
+  fullName: "",
+  email: "",
+  mobile: "",
+  dob: "",
+  cardLimit: "",
+  deviceType: "", // ✅ ADD THIS
+});
+
 
   const [loading, setLoading] = useState(false);
 
@@ -56,37 +74,45 @@ export default function SignupForm() {
     }
   };
 
-  return (
-    <div className="w-full max-w-lg bg-white rounded-xl shadow-sm p-6 mt-6">
-      <h3 className="flex items-center gap-2 font-medium mb-6">
-        🔒 Personal Information
-      </h3>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+
+  
+  return (
+    <div className="w-full max-w-7xl mx-auto bg-white px-6 py-8">
+    <h1 className="text-center text-xl font-semibold mb-8">
+      Apply Now
+    </h1>
+
+    <form onSubmit={handleSubmit} className="space-y-5">
+      <Field label="Name">
         <Input
           icon={User}
           name="fullName"
-          placeholder="Full Name *"
+          placeholder="Enter your name"
           maxLength={50}
           pattern="^[A-Za-z\s]+$"
           title="Only letters and spaces allowed"
           onChange={handleChange}
         />
+      </Field>
 
+      <Field label="Email">
         <Input
           icon={Mail}
           name="email"
-          placeholder="Email Address *"
+          placeholder="Enter your email"
           type="email"
           maxLength={100}
           pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$"
           onChange={handleChange}
         />
+      </Field>
 
+      <Field label="Mobile no.">
         <Input
           icon={Phone}
           name="mobile"
-          placeholder="Mobile Number *"
+          placeholder="Enter mobile number"
           type="tel"
           inputMode="numeric"
           maxLength={10}
@@ -94,51 +120,75 @@ export default function SignupForm() {
           title="Enter a valid 10-digit mobile number"
           onChange={handleChange}
         />
+      </Field>
 
-        <Input
-          icon={MapPin}
-          name="city"
-          placeholder="City *"
-          maxLength={30}
-          pattern="^[A-Za-z\s]+$"
-          title="Only letters allowed"
-          onChange={handleChange}
-        />
+     <Field label="Date of birth">
+  <div className="relative">
+    <input
+      name="dob"
+      type="date"
+      required
+      max={new Date().toISOString().split("T")[0]}
+        
+      onChange={handleChange}
+      className="w-full border rounded-md px-4 py-3 text-sm outline-none
+                 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+    />
 
-        <Input
-          icon={Calendar}
-          name="dob"
-          type="date"
-          max={new Date().toISOString().split("T")[0]}
-          onChange={handleChange}
-        />
+    <Calendar
+      size={18}
+      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none"
+    />
+  </div>
 
 
+</Field>
+
+
+     <Field label="Device Type">
+  <select
+    name="deviceType"
+    value={form.deviceType}
+    onChange={(e) =>
+      setForm((prev) => ({
+        ...prev,
+        deviceType: e.target.value,
+      }))
+    }
+    required
+    className="w-full border rounded-md px-4 py-3 text-sm outline-none focus:border-blue-500"
+  >
+    <option value="">Select device</option>
+    <option value="IOS">IOS</option>
+    <option value="Android">Android</option>
+    <option value="Web">Web</option>
+  </select>
+</Field>
+
+
+      <Field label="Card Limit">
         <Input
           icon={CreditCard}
           name="cardLimit"
-          placeholder="Card Limit (₹)"
+          placeholder="Enter limit"
           inputMode="numeric"
           maxLength={7}
           pattern="^\d+$"
           title="Enter card limit in numbers only"
           onChange={handleChange}
         />
+      </Field>
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full mt-6 bg-[#9b1c23] text-white py-3 rounded-lg font-medium hover:bg-[#7f161c] transition disabled:opacity-60"
-        >
-          {loading ? "Processing..." : "Continue Securely →"}
-        </button>
-      </form>
+      <button
+        type="submit"
+        disabled={loading}
+        className="w-full mt-6 bg-orange-500 hover:bg-orange-600 text-white py-3 rounded-md font-medium transition disabled:opacity-60"
+      >
+        {loading ? "Processing..." : "Proceed"}
+      </button>
+    </form>
+  </div>
 
-      <div className="text-center text-xs text-gray-500 mt-6">
-        <p>🔒 Your information is encrypted and protected.</p>
-        <p className="mt-1">We use bank-grade 256-bit SSL security.</p>
-      </div>
-    </div>
   );
 }
 
@@ -167,8 +217,7 @@ function Input({
   max?: string;
 }) {
   return (
-    <div className="flex items-center gap-3 border rounded-lg px-4 py-3 bg-gray-50">
-      <Icon size={18} className="text-gray-500" />
+    <div className="relative">
       <input
         name={name}
         type={type}
@@ -180,8 +229,15 @@ function Input({
         title={title}
         inputMode={inputMode}
         max={max}
-        className="w-full bg-transparent outline-none text-sm"
+        className="w-full border rounded-md px-4 py-3 text-sm outline-none focus:border-blue-500"
       />
+      {Icon && (
+        <Icon
+          size={18}
+          className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+        />
+      )}
     </div>
   );
 }
+
