@@ -1,11 +1,23 @@
-import Navbar from "@/components/Navbar";
+
 import HeroBanner from "@/components/HeroBanner";
 import CardSection from "@/components/CardSection";
+import Image from "next/image";
 
 const CardControlPage = () => {
   return (
     <>
-      <Navbar />
+       <section className="bg-gray-100">
+            <div className="max-w-full mx-auto ">
+              <Image
+                src="/header.png"
+                alt="Earn Big Returns"
+                width={1200}
+                height={400}
+                className="rounded-lg object-cover w-full"
+                priority
+              />
+            </div>
+          </section>
       <HeroBanner />
 
       <main className="max-w-7xl mx-auto">
