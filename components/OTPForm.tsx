@@ -74,7 +74,7 @@ export default function OTPForm() {
   };
 
   return (
-      <div className="w-full max-w-md mx-auto mt-12 px-6">
+      <div className="w-full max-w-md mx-auto px-6">
     <h1 className="text-center text-xl font-semibold mb-8">
       OTP Details
     </h1>
